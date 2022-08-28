@@ -11,7 +11,10 @@ function Book(title, author, isbn) {
 // UI Constructor
 function UI() {
     const DEL = "<a href='#' class='delete'>x</a>"
+    const WAIT_BEFORE_CLEAR_FORM = 500
+
     this.bookListTableBody = document.querySelector("tbody#book-list")
+    this.bookFormTextInputsNodeList = document.querySelectorAll("form#book-form input[type=text]")
 
     this.createTableRow = (book) => {
         let row = document.createElement("tr")
@@ -28,17 +31,29 @@ function UI() {
         return row
     }
 
+    this.clearAddBookFormTextInputs = () => {
+        this.bookFormTextInputsNodeList.forEach(node => {
+            node.value = ""
+        });
+    }
+
+    this.clearAddBookForm = () => {
+        setTimeout(() => {
+            this.clearAddBookFormTextInputs()
+        }, WAIT_BEFORE_CLEAR_FORM)
+
+    }
+
     this.addBookToList = (book) => {
-        print(book)
+        // print(book)
         let addBookRow = this.createTableRow(book)
-        print(addBookRow)
+        // print(addBookRow)
         this.bookListTableBody.appendChild(addBookRow)
+        this.clearAddBookForm()
     }
 }
 
-// Event Listeners
-let form = document.getElementById("book-form");
-// console.log(form)
+
 
 let bookProps = () => {
     let bookPropValue = (prop) => document.querySelector(`form input#${prop}`).value
@@ -69,4 +84,13 @@ let formSubmitEventHandler = (event) => {
     event.preventDefault()
 }
 
+let bookTableListEventHandler = (event) => {
+    print(`Book List click event: ${event.target}`)
+}
+
+// Event Listeners
+let form = document.getElementById("book-form");
 form.addEventListener('submit', formSubmitEventHandler)
+
+let bookTableList = document.querySelector("table tbody#book-list")
+bookTableList.addEventListener('click', bookTableListEventHandler)
