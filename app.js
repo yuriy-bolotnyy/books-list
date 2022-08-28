@@ -72,17 +72,38 @@ function UI() {
         return div
     }
 
-    this.showAlert = (msg, className) => {
+    this.showAlert = (msg, className, clearTimeout=2) => {
         const alert = this.createAlert(msg, className)
         const table = document.querySelector("table")
         table.parentNode.insertBefore(alert, table)
+        setTimeout(() => {alert.remove()}, clearTimeout*1000)
+    }
+
+    this.showErrorAlert = (msg, clearTimeout=5) => {
+        this.showAlert(msg, 'error', clearTimeout)
+    }
+
+    this.showSuccessAlert = (msg, clearTimeout=2) => {
+        this.showAlert(msg, 'success', clearTimeout)
     }
 
     this.addBookToList = (book) => {
+        ['title', 'author', 'isbn'].forEach(it => {
+            if (book[it] === "") {
+                ui.showErrorAlert(`${it} empty! Fill it out and try once more!`)
+                return
+            }
+        })
+
+        // if (book.title === "" || book.author === "" || book.isbn === "") {
+        //     ui.showErrorAlert("Some book fields are empty! Fill it out and try more!")
+        //     return
+        // }
         // print(book)
         let addBookRow = this.createTableRow(book)
         // print(addBookRow)
         this.bookListTableBody.appendChild(addBookRow)
+        ui.showSuccessAlert(`Book added :)`)
         this.clearAddBookForm()
     }
 
@@ -94,7 +115,7 @@ function UI() {
             if (isbn === isbnRequested) {
                 print("Found row for deletion!")
                 row.remove()
-                ui.showAlert("Book deleted", "success")
+                ui.showSuccessAlert(`Book (${isbn}) deleted`)
             }
         })
     }
