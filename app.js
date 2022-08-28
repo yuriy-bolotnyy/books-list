@@ -35,8 +35,6 @@ function UI() {
         this.bookListTableBody.appendChild(addBookRow)
     }
 }
-    
-
 
 // Event Listeners
 let form = document.getElementById("book-form");
