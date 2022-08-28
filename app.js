@@ -14,7 +14,11 @@ function UI() {
     const WAIT_BEFORE_CLEAR_FORM = 500
 
     this.bookListTableBody = document.querySelector("tbody#book-list")
-    this.bookFormTextInputsNodeList = document.querySelectorAll("form#book-form input[type=text]")
+    this.bookFormTextInputNodesList = document.querySelectorAll("form#book-form input[type=text]")
+
+    this.bookListRows = () => {
+        let rows = this.bookListTableBody.childNodes
+    }
 
     this.createTableRow = (book) => {
         let createTableDataCell = (bookPropName, bookPropValue) => {
@@ -49,7 +53,7 @@ function UI() {
     }
 
     this.clearAddBookFormTextInputs = () => {
-        this.bookFormTextInputsNodeList.forEach(node => {
+        this.bookFormTextInputNodesList.forEach(node => {
             node.value = ""
         });
     }
@@ -67,6 +71,18 @@ function UI() {
         // print(addBookRow)
         this.bookListTableBody.appendChild(addBookRow)
         this.clearAddBookForm()
+    }
+
+    this.deleteBookFromList = (isbnRequested) => {
+        // delete book from list
+        let allBookRows = document.querySelectorAll("tbody#book-list tr")
+        allBookRows.forEach(row => {
+            let isbn = row.querySelector("#isbn").textContent
+            if (isbn === isbnRequested) {
+                print("Found row for deletion!")
+                row.remove()
+            }
+        })
     }
 }
 
@@ -110,11 +126,11 @@ let bookTableListEventHandler = (event) => {
 
     // Book deletion requested
     if (eventTargetClassName === 'delete' && eventTargetText === 'x') {
-        let isbn = event.target.parentNode.parentNode.querySelector("td#isbn").textContent
+        let row = event.target.parentNode.parentNode
+        let isbn = row.querySelector("td#isbn").textContent
         print(`ISBN #${isbn} book deletion requested!`)
-
-
-    }// event.target.parentNode.parentNode.querySelectorAll("td")
+        ui.deleteBookFromList(isbn)
+    }
 
     event.preventDefault()
 }
