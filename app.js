@@ -88,12 +88,17 @@ function UI() {
     }
 
     this.addBookToList = (book) => {
-        ['title', 'author', 'isbn'].forEach(it => {
-            if (book[it] === "") {
-                ui.showErrorAlert(`${it} empty! Fill it out and try once more!`)
-                return
-            }
-        })
+        try {
+            ['title', 'author', 'isbn'].forEach(it => {
+                if (book[it] === "") {
+                    ui.showErrorAlert(`${it} empty! Fill it out and try once more!`)
+                    throw BreakException
+                    // return
+                }
+            })
+        } catch (BreakException) {
+            return
+        }
 
         // if (book.title === "" || book.author === "" || book.isbn === "") {
         //     ui.showErrorAlert("Some book fields are empty! Fill it out and try more!")
