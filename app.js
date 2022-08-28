@@ -17,15 +17,32 @@ function UI() {
     this.bookFormTextInputsNodeList = document.querySelectorAll("form#book-form input[type=text]")
 
     this.createTableRow = (book) => {
+        let createTableDataCell = (bookPropName, bookPropValue) => {
+            let cell = document.createElement("td")
+            cell.id = bookPropName
+            cell.textContent = bookPropValue
+            return cell
+        }
+
         let row = document.createElement("tr")
 
         // Hardcoder book props oneliner
         // row.innerHTML = `<td>${book.title}</td><td>${book.author}</td><td>${book.isbn}</td>`
 
         // Threeliner, but book props retrieve programmatically
-        let keys = Object.keys(book)
-        let props = keys.map(prop => book[prop])
-        row.innerHTML = "<td>" + props.join("</td><td>") + "</td>"
+        let bookPropNames = Object.keys(book)
+        // let bookPropValues = bookPropNames.map(prop => book[prop])
+        // row.innerHTML = "<td>" + bookPropValues.join("</td><td>") + "</td>"
+        // row.innerHTML += `<td>${DEL}</td>`
+
+        // Even more soficsticated approach - buld a cell separately and then embed it
+        bookPropNames.forEach(bookPropName => {
+            bookPropValue = book[bookPropName]
+            let cell = createTableDataCell(bookPropName, bookPropValue)
+            row.appendChild(cell)
+        });
+
+        // Add 'x' delete link
         row.innerHTML += `<td>${DEL}</td>`
 
         return row
@@ -53,7 +70,7 @@ function UI() {
     }
 }
 
-
+let ui = new UI();
 
 let bookProps = () => {
     let bookPropValue = (prop) => document.querySelector(`form input#${prop}`).value
@@ -78,14 +95,28 @@ let formSubmitEventHandler = (event) => {
     const book = new Book(props.title, props.author, props.isbn)
     // console.log(book)
 
-    let ui = new UI();
+    // let ui = new UI();
     ui.addBookToList(book)
 
     event.preventDefault()
 }
 
 let bookTableListEventHandler = (event) => {
-    print(`Book List click event: ${event.target}`)
+    let eventTarget = event.target
+    let eventTargetText = eventTarget.text
+    let eventTargetClassName = eventTarget.className
+
+    print(`Book List event -> clicked ${eventTargetText} .${eventTargetClassName}`)
+
+    // Book deletion requested
+    if (eventTargetClassName === 'delete' && eventTargetText === 'x') {
+        let isbn = event.target.parentNode.parentNode.querySelector("td#isbn").textContent
+        print(`ISBN #${isbn} book deletion requested!`)
+
+
+    }// event.target.parentNode.parentNode.querySelectorAll("td")
+
+    event.preventDefault()
 }
 
 // Event Listeners
