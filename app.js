@@ -65,6 +65,19 @@ function UI() {
 
     }
 
+    this.createAlert = (msg, className) => {
+        const div = document.createElement('div')
+        div.className = `alert ${className}`
+        div.appendChild(document.createTextNode(msg))
+        return div
+    }
+
+    this.showAlert = (msg, className) => {
+        const alert = this.createAlert(msg, className)
+        const table = document.querySelector("table")
+        table.parentNode.insertBefore(alert, table)
+    }
+
     this.addBookToList = (book) => {
         // print(book)
         let addBookRow = this.createTableRow(book)
@@ -81,6 +94,7 @@ function UI() {
             if (isbn === isbnRequested) {
                 print("Found row for deletion!")
                 row.remove()
+                ui.showAlert("Book deleted", "success")
             }
         })
     }
